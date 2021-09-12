@@ -8,5 +8,59 @@
     <link rel="stylesheet" href="css/style.css" />
     <script defer src="scripts/index.js"></script>
   </head>
-  <body></body>
+  <body>
+    <header id="header">
+      <h1>Tic Tac Toe</h1>
+      <span>Keep it classic</span>
+    </header>
+    <main id="container">
+      <div class="start-menu">
+        <form action="#">
+          <input
+            type="text"
+            id="player-one"
+            name="player-one"
+            placeholder="Enter your name"
+          />
+          <input type="radio" id="mode-pvp" name="mode" />
+          <input type="radio" id="mode-pvc" name="mode" />
+          <input
+            type="text"
+            id="player-two"
+            name="player-two"
+            placeholder="Enter other player name"
+          />
+          <input type="radio" id="diff-easy" name="difficulty" />
+          <input type="radio" id="diff-medium" name="difficulty" />
+          <input type="radio" id="diff-hard" name="difficulty" />
+          <input type="submit" value="Start" />
+        </form>
+      </div>
+      <div class="game-wrapper">
+        <div class="info-text">Round 1</div>
+        <div class="scoreboard">
+          <p>Your Score: <span class="p1-score">0</span></p>
+          <p>Computer's Score: <span class="p2-score">0</span></p>
+        </div>
+        <div class="board">
+          <div class="row">
+            <div class="col">X</div>
+            <div class="col">O</div>
+            <div class="col">X</div>
+          </div>
+          <div class="row">
+            <div class="col">X</div>
+            <div class="col">O</div>
+            <div class="col">X</div>
+          </div>
+          <div class="row">
+            <div class="col">X</div>
+            <div class="col">O</div>
+            <div class="col">X</div>
+          </div>
+        </div>
+        <button class="new-game">New Game</button>
+      </div>
+    </main>
+  </body>
 </html>
