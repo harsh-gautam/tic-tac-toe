@@ -34,3 +34,55 @@ body {
   margin-top: 50%;
 }
 
+.radio-wrapper {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.radio-container {
+  display: block;
+  position: relative;
+  padding-left: 48%;
+  margin-bottom: 35px;
+  cursor: pointer;
+  font-size: 2rem;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.diff-radio {
+  padding-left: 32%;
+  font-size: 1rem;
+}
+
+/* Hide browser default radio buttons */
+.radio-container input {
+  display: none;
+}
+
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  background-color: #fff;
+}
+
+.diff {
+  width: 80%;
+  text-align: center;
+  padding: 0.5rem;
+  text-transform: uppercase;
+}
+
+.radio-container:hover input ~ .checkmark {
+  background-color: #caf0f8;
+}
+
+.radio-container input:checked ~ .checkmark {
+  background-color: #0096c7;
+}

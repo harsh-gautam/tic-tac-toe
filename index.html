@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Tic Tac Toe!</title>
     <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/game-area.css" />
     <script defer src="scripts/index.js"></script>
   </head>
   <body>
@@ -22,17 +23,36 @@
             name="player-one"
             placeholder="Enter your name"
           />
-          <input type="radio" id="mode-pvp" name="mode" />
-          <input type="radio" id="mode-pvc" name="mode" />
+          <p class="radio-wrapper">
+            <label for="mode-pvp" class="radio-container">
+              <input type="radio" id="mode-pvp" name="mode" />
+              <span class="checkmark">PvP</span>
+            </label>
+            <label for="mode-pvc" class="radio-container">
+              <input type="radio" id="mode-pvc" name="mode" />
+              <span class="checkmark">PvC</span>
+            </label>
+          </p>
           <input
             type="text"
             id="player-two"
             name="player-two"
             placeholder="Enter other player name"
           />
-          <input type="radio" id="diff-easy" name="difficulty" />
-          <input type="radio" id="diff-medium" name="difficulty" />
-          <input type="radio" id="diff-hard" name="difficulty" />
+          <p class="radio-wrapper">
+            <label for="diff-easy" class="radio-container diff-radio">
+              <input type="radio" id="diff-easy" name="difficulty" />
+              <span class="checkmark diff">Easy</span>
+            </label>
+            <label for="diff-medium" class="radio-container diff-radio">
+              <input type="radio" id="diff-medium" name="difficulty" />
+              <span class="checkmark diff">Medium</span>
+            </label>
+            <label for="diff-hard" class="radio-container diff-radio">
+              <input type="radio" id="diff-hard" name="difficulty" />
+              <span class="checkmark diff">Hard</span>
+            </label>
+          </p>
           <input type="submit" value="Start" />
         </form>
       </div>
