@@ -1,0 +1,36 @@
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  background-color: #023e8a;
+}
+
+#header {
+  height: 15%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border: 1px solid white;
+}
+
+#container {
+  height: 75%;
+  border: 1px solid white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem;
+}
+
+.start-menu {
+  max-width: 250px;
+  width: 100%;
+}
+
+.start-menu form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  margin-top: 50%;
+}
+
