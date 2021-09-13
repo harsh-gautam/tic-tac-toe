@@ -45,14 +45,14 @@ body {
 .start-menu {
   max-width: 250px;
   width: 100%;
-  display: none;
+  display: flex;
 }
 
 .start-menu form {
   width: 100%;
   display: flex;
   flex-direction: column;
-  margin-top: 50%;
+  margin-top: 10%;
 }
 
 .radio-wrapper {
