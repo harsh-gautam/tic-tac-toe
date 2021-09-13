@@ -2,6 +2,7 @@ const displayController = (function (document) {
   // Module
   const _startScreen = document.querySelector(".start-menu");
   const _gameScreen = document.querySelector(".game-wrapper");
+  const _playerTwo = document.querySelector("#player-two");
 
   const toggleDisplay = (type) => {
     if (type == "form") {
@@ -17,7 +18,29 @@ const displayController = (function (document) {
     element.addEventListener(eventType, eventHandler);
   };
 
-  return { setupEventListener, toggleDisplay };
+  const _attachPvC = () => {
+    const pvc = document.querySelector("#mode-pvc");
+    pvc.addEventListener("click", () => {
+      _playerTwo.value = "AI";
+      _playerTwo.disabled = true;
+    });
+  };
+
+  const _attachPvP = () => {
+    const pvp = document.querySelector("#mode-pvp");
+    pvp.addEventListener("click", () => {
+      _playerTwo.disabled = false;
+      _playerTwo.value = "";
+      _playerTwo.focus();
+    });
+  };
+
+  const setupDOM = () => {
+    _attachPvC();
+    _attachPvP();
+  };
+
+  return { setupEventListener, toggleDisplay, setupDOM };
 })(document);
 
 const form = document.querySelector("#form");
@@ -52,5 +75,6 @@ const Player = (pname, marker, gameMode, diff) => {
   return { getInfo, changeDifficulty, changeMode };
 };
 
+displayController.setupDOM();
 displayController.setupEventListener(form, "submit", handleForm);
 displayController.setupEventListener(newGameBtn, "click", handleNewGame);
