@@ -25,6 +25,7 @@ body {
 .start-menu {
   max-width: 250px;
   width: 100%;
+  display: none;
 }
 
 .start-menu form {
@@ -39,6 +40,7 @@ body {
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
+  margin: 5% 0;
 }
 
 .radio-container {
@@ -47,7 +49,7 @@ body {
   padding-left: 48%;
   margin-bottom: 35px;
   cursor: pointer;
-  font-size: 2rem;
+  font-size: 1.5rem;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -68,8 +70,12 @@ body {
   position: absolute;
   top: 0;
   left: 0;
-  width: 100%;
+  width: 86%;
+  text-align: center;
+  padding: 0.5rem;
   background-color: #fff;
+  border-radius: 9999px;
+  color: #023e8a;
 }
 
 .diff {
@@ -85,4 +91,36 @@ body {
 
 .radio-container input:checked ~ .checkmark {
   background-color: #0096c7;
+}
+
+.form-input {
+  font-size: 1.2rem;
+  padding: 0.8rem 1.4rem;
+  margin: 3% 0;
+  border: 0;
+  border-radius: 9999px;
+  color: #023e8a;
+  /* box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.3); */
+}
+
+.form-input:focus {
+  outline: none;
+  background-color: #caf0f8;
+}
+
+.submit-button {
+  padding: 0.8rem 1.4rem;
+  font-size: 1.2rem;
+  border: 0;
+  border-radius: 9999px;
+  margin: 5% 0;
+  cursor: pointer;
+  color: #023e8a;
+  text-transform: uppercase;
+  font-weight: 700;
+  letter-spacing: 1%;
+}
+
+.submit-button:hover {
+  background-color: #caf0f8;
 }
