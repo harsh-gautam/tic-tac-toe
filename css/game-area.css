@@ -1,11 +1,23 @@
 .game-wrapper {
+  max-width: 700px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.scoreboard {
+.info-text {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  color: #90e0ef;
+  margin-bottom: 5%;
+}
+
+.board-wrapper {
   display: inherit;
   flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
 }
 
 .board {
@@ -19,12 +31,60 @@
 }
 
 .col {
-  border: 1px solid #48cae4;
+  /* border: 1px solid #48cae4; */
   padding: 0.5rem 1.5rem;
   font-size: 5rem;
+  font-weight: 700;
   cursor: pointer;
-  margin: 0.2rem;
+  margin: 0.3rem;
   border-radius: 0.8rem;
   background-color: #48cae4;
   color: #023e8a;
+  transition: background-color 0.5s ease-out;
+}
+
+.col:hover {
+  background-color: #00b4d8;
+}
+
+.p1-info,
+.p2-info {
+  text-align: center;
+}
+
+.p1-name,
+.p2-name {
+  width: 150px;
+  font-size: 1.5rem;
+  font-weight: 300;
+  color: #90e0ef;
+  margin: 0;
+  letter-spacing: 2px;
+}
+
+.bi {
+  margin-right: 0.5rem;
+}
+
+.bi-star-fill {
+  color: yellow;
+}
+
+.focused {
+}
+
+.btn-wrapper {
+  display: inherit;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 2rem;
+}
+
+.btn-wrapper button {
+  cursor: pointer;
+  font-size: 1rem;
+  text-transform: uppercase;
+  padding: 0.5rem 1rem;
+  color: #023e8a;
+  font-weight: 500;
 }

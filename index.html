@@ -10,8 +10,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;700;900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Raleway:wght@100;300;400;500;700;900&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.5.0/font/bootstrap-icons.css"
     />
     <script defer src="scripts/index.js"></script>
   </head>
@@ -66,28 +70,39 @@
       </div>
       <div class="game-wrapper">
         <div class="info-text">Round 1</div>
-        <div class="scoreboard">
-          <p>Your Score: <span class="p1-score">0</span></p>
-          <p>Computer's Score: <span class="p2-score">0</span></p>
+        <div class="board-wrapper">
+          <div class="p1-info">
+            <p class="p1-name"><i class="bi bi-person-fill"></i>Harsh</p>
+            <p class="p1-score">
+              <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i
+              ><i class="bi bi-star-fill"></i>
+            </p>
+          </div>
+          <div class="board">
+            <div class="row">
+              <div class="col">X</div>
+              <div class="col">O</div>
+              <div class="col">X</div>
+            </div>
+            <div class="row">
+              <div class="col">X</div>
+              <div class="col">O</div>
+              <div class="col">X</div>
+            </div>
+            <div class="row">
+              <div class="col">X</div>
+              <div class="col">O</div>
+              <div class="col">X</div>
+            </div>
+          </div>
+          <div class="p2-info">
+            <p class="p2-name">Harsh</p>
+            <p class="p2-score">0</p>
+          </div>
         </div>
-        <div class="board">
-          <div class="row">
-            <div class="col">X</div>
-            <div class="col">O</div>
-            <div class="col">X</div>
-          </div>
-          <div class="row">
-            <div class="col">X</div>
-            <div class="col">O</div>
-            <div class="col">X</div>
-          </div>
-          <div class="row">
-            <div class="col">X</div>
-            <div class="col">O</div>
-            <div class="col">X</div>
-          </div>
+        <div class="btn-wrapper">
+          <button class="new-game">New Game</button>
         </div>
-        <button class="new-game">New Game</button>
       </div>
     </main>
   </body>
