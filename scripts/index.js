@@ -43,36 +43,68 @@ const displayController = (function (document) {
   return { setupEventListener, toggleDisplay, setupDOM };
 })(document);
 
+const gameBoard = (function () {
+  let _mode;
+  let _difficulty;
+  let _p1;
+  let _p2;
+  let _board = [[], [], []];
+
+  const _setParameters = (p1, p2, mode, difficulty) => {
+    _p1 = p1;
+    _p2 = p2;
+    _mode = mode;
+    _difficulty = difficulty;
+  };
+
+  const _getParameters = () => {
+    return {
+      p1: _p1,
+      p2: _p2,
+      mode: _mode,
+      difficulty: _difficulty,
+    };
+  };
+
+  return {
+    setParameters: _setParameters,
+    getParameters: _getParameters,
+  };
+})();
+
+const Player = (pname, marker) => {
+  const getName = () => pname;
+  const getMarker = () => marker;
+  const changeMarker = (newMarker = "x") => {
+    marker = newMarker;
+  };
+
+  return { getName, getMarker, changeMarker };
+};
+
 const form = document.querySelector("#form");
 const newGameBtn = document.querySelector(".new-game");
 
 const handleForm = (e) => {
   e.preventDefault();
-  console.log(e.target);
-  displayController.toggleDisplay("form");
+  // get form values
+  const p1Name = e.target.playerone.value;
+  const p2Name = e.target.playertwo.value;
+  const gameMode = e.target.mode.value;
+  const difficulty = e.target.difficulty.value;
+
+  // create players
+  p1 = Player(p1Name, "x");
+  p2 = Player(p2Name, "o");
+
+  // create game state
+  gameBoard.setParameters(p1, p2, gameMode, difficulty);
+  console.log(gameBoard.getParameters());
+  // displayController.toggleDisplay("form");
 };
 
 const handleNewGame = () => {
   displayController.toggleDisplay("newgame");
-};
-
-const Player = (pname, marker, gameMode, diff) => {
-  let difficulty = diff;
-  let name = pname;
-  let mode = gameMode;
-
-  const getInfo = () => {
-    name, marker, mode, difficulty;
-  };
-
-  const changeDifficulty = (d) => {
-    difficulty = d;
-  };
-
-  const changeMode = (m) => {
-    mode = m;
-  };
-  return { getInfo, changeDifficulty, changeMode };
 };
 
 displayController.setupDOM();
