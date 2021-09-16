@@ -2,6 +2,8 @@ const displayController = (function (document) {
   // Module
   const _startScreen = document.querySelector(".start-menu");
   const _gameScreen = document.querySelector(".game-wrapper");
+
+  const _newGameBtn = document.querySelector(".new-game");
   const _playerTwo = document.querySelector("#player-two");
   const _p1Name = document.querySelector(".p1-name");
   const _p2Name = document.querySelector(".p2-name");
@@ -60,6 +62,8 @@ const displayController = (function (document) {
   const _setupDOM = () => {
     _attachPvC();
     _attachPvP();
+
+    _newGameBtn.addEventListener("click", () => toggleDisplay("newgame"));
   };
 
   return {
@@ -114,19 +118,15 @@ const gameBoard = (function () {
   };
 })();
 
-const Player = (identity, pname, marker) => {
+const Player = (pname, marker) => {
   const getName = () => pname;
   const getMarker = () => marker;
-  const getIdentity = () => identity;
   const changeMarker = (newMarker = "x") => {
     marker = newMarker;
   };
 
   return { getName, getMarker, changeMarker };
 };
-
-const form = document.querySelector("#form");
-const newGameBtn = document.querySelector(".new-game");
 
 const handleForm = (e) => {
   e.preventDefault();
@@ -137,8 +137,8 @@ const handleForm = (e) => {
   const difficulty = e.target.difficulty.value;
 
   // create players
-  p1 = Player("p1", p1Name, "x");
-  p2 = Player("p2", p2Name, "o");
+  p1 = Player(p1Name, "x");
+  p2 = Player(p2Name, "o");
 
   // create game state
   gameBoard.setParameters(p1, p2, gameMode, difficulty);
@@ -149,19 +149,27 @@ const handleForm = (e) => {
   startGame();
 };
 
-const handleNewGame = () => {
-  displayController.toggleDisplay("newgame");
-};
-
 function startGame() {
   displayController.updatePlayerNames(game.p1.getName(), game.p2.getName());
   // displayController.updateCurrentPlayer(
   //   gameBoard.getCurrentPlayer().getMarker()
   // );
-  gameBoard.playGame();
+  gameBoard.updateCurrentPlayer();
   console.log(gameBoard.getCurrentPlayer());
 }
 
 displayController.setupDOM();
+
+const form = document.querySelector("#form");
 displayController.setupEventListener(form, "submit", handleForm);
-displayController.setupEventListener(newGameBtn, "click", handleNewGame);
+
+const cells = document.querySelectorAll(".col");
+cells.forEach((cell) => {
+  displayController.setupEventListener(cell, "click", handleCellClick);
+});
+
+function handleCellClick(e) {
+  const col = e.target.dataset.col;
+  const row = e.target.parentNode.dataset.row;
+  console.log({ row, col });
+}
