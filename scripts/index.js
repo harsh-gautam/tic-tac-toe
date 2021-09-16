@@ -84,7 +84,11 @@ const gameBoard = (function () {
   let _p1;
   let _p2;
   let _currentPlayer = null;
-  let _board = [[], [], []];
+  let _board = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ];
 
   const _setParameters = (p1, p2, mode, difficulty) => {
     _p1 = p1;
@@ -113,12 +117,24 @@ const gameBoard = (function () {
 
   const _getCurrentPlayer = () => _currentPlayer;
 
+  const _makeMove = (row, col) => {
+    if (_board[row][col] !== "") {
+      console.log("Wrong move");
+      return false;
+    } // Is Valid Move??
+    // else continue
+    _board[row][col] = _currentPlayer.getMarker();
+    console.log(_board);
+    return true;
+  };
+
   return {
     setParameters: _setParameters,
     getParameters: _getParameters,
     playGame: _playGame,
     getCurrentPlayer: _getCurrentPlayer,
     updateCurrentPlayer: _updateCurrentPlayer,
+    makeMove: _makeMove,
   };
 })();
 
@@ -176,6 +192,7 @@ function handleCellClick(e) {
   const col = Number(e.target.dataset.col);
   const row = Number(e.target.parentNode.dataset.row);
   const currentPlayer = gameBoard.getCurrentPlayer();
+  if (!gameBoard.makeMove(row, col)) return;
   displayController.updateMoveDOM(currentPlayer.getMarker(), e.target);
   gameBoard.updateCurrentPlayer();
   console.log({ row, col });
