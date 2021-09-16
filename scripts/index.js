@@ -2,7 +2,6 @@ const displayController = (function (document) {
   // Module
   const _startScreen = document.querySelector(".start-menu");
   const _gameScreen = document.querySelector(".game-wrapper");
-
   const _newGameBtn = document.querySelector(".new-game");
   const _playerTwo = document.querySelector("#player-two");
   const _p1Name = document.querySelector(".p1-name");
@@ -38,6 +37,10 @@ const displayController = (function (document) {
     }
   };
 
+  const _updateMoveDom = (marker, target) => {
+    target.textContent = marker.toUpperCase();
+  };
+
   const setupEventListener = (element, eventType, eventHandler) => {
     element.addEventListener(eventType, eventHandler);
   };
@@ -71,6 +74,7 @@ const displayController = (function (document) {
     toggleDisplay,
     setupDOM: _setupDOM,
     updatePlayerNames: _updatePlayerNames,
+    updateMoveDOM: _updateMoveDom,
   };
 })(document);
 
@@ -169,7 +173,10 @@ cells.forEach((cell) => {
 });
 
 function handleCellClick(e) {
-  const col = e.target.dataset.col;
-  const row = e.target.parentNode.dataset.row;
+  const col = Number(e.target.dataset.col);
+  const row = Number(e.target.parentNode.dataset.row);
+  const currentPlayer = gameBoard.getCurrentPlayer();
+  displayController.updateMoveDOM(currentPlayer.getMarker(), e.target);
+  gameBoard.updateCurrentPlayer();
   console.log({ row, col });
 }
