@@ -117,7 +117,7 @@ const gameBoard = (function () {
 
   const _getCurrentPlayer = () => _currentPlayer;
 
-  const _checkWinner = () => {
+  const _isWinner = () => {
     for (let i = 0; i < 3; i++) {
       // check for 3 in row
       if (
@@ -162,7 +162,7 @@ const gameBoard = (function () {
     } // Is Valid Move??
     // else continue
     _board[row][col] = _currentPlayer.getMarker();
-    _checkWinner();
+    _isWinner();
     return true;
   };
 
