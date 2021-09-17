@@ -41,6 +41,11 @@ const displayController = (function (document) {
     target.textContent = marker.toUpperCase();
   };
 
+  const _updateInfoText = (text) => {
+    const _infoDiv = document.querySelector(".info-text");
+    _infoDiv.textContent = `${text} won!`;
+  };
+
   const setupEventListener = (element, eventType, eventHandler) => {
     element.addEventListener(eventType, eventHandler);
   };
@@ -75,6 +80,7 @@ const displayController = (function (document) {
     setupDOM: _setupDOM,
     updatePlayerNames: _updatePlayerNames,
     updateMoveDOM: _updateMoveDom,
+    updateInfoText: _updateInfoText,
   };
 })(document);
 
@@ -156,13 +162,14 @@ const gameBoard = (function () {
   };
 
   const _makeMove = (row, col) => {
-    if (_board[row][col] !== "") {
-      console.log("Wrong move");
-      return false;
-    } // Is Valid Move??
+    if (_board[row][col] !== "") return false; // Is Valid Move??
     // else continue
+    if (_currentPlayer.getWinStatus()) return false; // if there is already a winner don't make any moves
+
     _board[row][col] = _currentPlayer.getMarker();
-    _isWinner();
+    if (_isWinner()) {
+      _currentPlayer.updateWinStatus(true);
+    }
     return true;
   };
 
@@ -176,14 +183,16 @@ const gameBoard = (function () {
   };
 })();
 
-const Player = (pname, marker) => {
+const Player = (pname, marker, winner = false) => {
   const getName = () => pname;
   const getMarker = () => marker;
   const changeMarker = (newMarker = "x") => {
     marker = newMarker;
   };
+  const getWinStatus = () => winner;
+  const updateWinStatus = (s) => (winner = s);
 
-  return { getName, getMarker, changeMarker };
+  return { getName, getMarker, changeMarker, getWinStatus, updateWinStatus };
 };
 
 const handleForm = (e) => {
@@ -213,7 +222,6 @@ function startGame() {
   //   gameBoard.getCurrentPlayer().getMarker()
   // );
   gameBoard.updateCurrentPlayer();
-  console.log(gameBoard.getCurrentPlayer());
 }
 
 displayController.setupDOM();
@@ -229,8 +237,18 @@ cells.forEach((cell) => {
 function handleCellClick(e) {
   const col = Number(e.target.dataset.col);
   const row = Number(e.target.parentNode.dataset.row);
-  const currentPlayer = gameBoard.getCurrentPlayer();
+
   if (!gameBoard.makeMove(row, col)) return;
-  displayController.updateMoveDOM(currentPlayer.getMarker(), e.target);
+
+  displayController.updateMoveDOM(
+    gameBoard.getCurrentPlayer().getMarker(),
+    e.target
+  );
+
+  if (gameBoard.getCurrentPlayer().getWinStatus()) {
+    // if true winner is decided
+    displayController.updateInfoText(gameBoard.getCurrentPlayer().getName());
+    return;
+  }
   gameBoard.updateCurrentPlayer();
 }
