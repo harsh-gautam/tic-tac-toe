@@ -43,7 +43,7 @@ const displayController = (function (document) {
 
   const _updateInfoText = (text) => {
     const _infoDiv = document.querySelector(".info-text");
-    _infoDiv.textContent = `${text} won!`;
+    _infoDiv.textContent = text;
   };
 
   const updateCurrentPlayerDOM = (name) => {
@@ -100,6 +100,7 @@ const gameBoard = (function () {
   let _difficulty;
   let _p1;
   let _p2;
+  let _gameFinished = false;
   let _currentPlayer = null;
   let _board = ["", "", "", "", "", "", "", "", ""];
 
@@ -117,10 +118,6 @@ const gameBoard = (function () {
       mode: _mode,
       difficulty: _difficulty,
     };
-  };
-
-  const _playGame = () => {
-    if (_currentPlayer === null) _currentPlayer = p1;
   };
 
   const _updateCurrentPlayer = () => {
@@ -170,15 +167,26 @@ const gameBoard = (function () {
     return false; // default case
   };
 
+  const _isDraw = () => {
+    for (let i = 0; i < 9; i++) {
+      if (_board[i] === "") return false;
+    }
+    return true;
+  };
+
   const _makeMove = (pos) => {
     if (_board[pos] !== "") return false; // Is Valid Move??
     // else continue
     if (_currentPlayer.getWinStatus()) return false; // if there is already a winner don't make any moves
 
     _board[pos] = _currentPlayer.getMarker();
-    console.log(_board);
+
     if (_isWinner()) {
+      _gameFinished = true;
       _currentPlayer.updateWinStatus(true);
+    }
+    if (_isDraw()) {
+      _gameFinished = true;
     }
     return true;
   };
@@ -186,10 +194,10 @@ const gameBoard = (function () {
   return {
     setParameters: _setParameters,
     getParameters: _getParameters,
-    playGame: _playGame,
     getCurrentPlayer: _getCurrentPlayer,
     updateCurrentPlayer: _updateCurrentPlayer,
     makeMove: _makeMove,
+    isGameFinished: () => _gameFinished,
   };
 })();
 
@@ -252,14 +260,19 @@ function handleCellClick(e) {
 
   if (!gameBoard.makeMove(pos)) return;
 
-  displayController.updateMoveDOM(
-    gameBoard.getCurrentPlayer().getMarker(),
-    e.target
-  );
+  const currentPlayer = gameBoard.getCurrentPlayer();
 
-  if (gameBoard.getCurrentPlayer().getWinStatus()) {
+  displayController.updateMoveDOM(currentPlayer.getMarker(), e.target);
+
+  if (gameBoard.isGameFinished()) {
     // if true winner is decided
-    displayController.updateInfoText(gameBoard.getCurrentPlayer().getName());
+    if (!currentPlayer.getWinStatus()) {
+      displayController.updateInfoText("It's a draw!");
+      return;
+    }
+    displayController.updateInfoText(
+      `${currentPlayer.getName()} wins the game!`
+    );
     return;
   }
   gameBoard.updateCurrentPlayer();
