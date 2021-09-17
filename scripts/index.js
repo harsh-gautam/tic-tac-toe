@@ -46,6 +46,16 @@ const displayController = (function (document) {
     _infoDiv.textContent = `${text} won!`;
   };
 
+  const updateCurrentPlayerDOM = (name) => {
+    if (name === _p1Name.textContent) {
+      _p1Name.classList.add("current");
+      _p2Name.classList.remove("current");
+    } else {
+      _p2Name.classList.add("current");
+      _p1Name.classList.remove("current");
+    }
+  };
+
   const setupEventListener = (element, eventType, eventHandler) => {
     element.addEventListener(eventType, eventHandler);
   };
@@ -81,6 +91,7 @@ const displayController = (function (document) {
     updatePlayerNames: _updatePlayerNames,
     updateMoveDOM: _updateMoveDom,
     updateInfoText: _updateInfoText,
+    updateCurrentPlayerDOM,
   };
 })(document);
 
@@ -222,6 +233,9 @@ function startGame() {
   //   gameBoard.getCurrentPlayer().getMarker()
   // );
   gameBoard.updateCurrentPlayer();
+  displayController.updateCurrentPlayerDOM(
+    gameBoard.getCurrentPlayer().getName()
+  );
 }
 
 displayController.setupDOM();
@@ -251,4 +265,7 @@ function handleCellClick(e) {
     return;
   }
   gameBoard.updateCurrentPlayer();
+  displayController.updateCurrentPlayerDOM(
+    gameBoard.getCurrentPlayer().getName()
+  );
 }

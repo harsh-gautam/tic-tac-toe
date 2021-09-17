@@ -65,6 +65,11 @@
   letter-spacing: 2px;
 }
 
+.current {
+  font-weight: 700;
+  text-shadow: 0 0 12px #90e0ef;
+}
+
 .bi {
   margin-right: 0.5rem;
 }
