@@ -117,6 +117,44 @@ const gameBoard = (function () {
 
   const _getCurrentPlayer = () => _currentPlayer;
 
+  const _checkWinner = () => {
+    for (let i = 0; i < 3; i++) {
+      // check for 3 in row
+      if (
+        (_board[i][0] !== "" || _board[i][1] !== "" || _board[i][2] !== "") &&
+        _board[i][0] === _board[i][1] &&
+        _board[i][1] === _board[i][2]
+      ) {
+        return true;
+      }
+      // check for 3 in column
+      if (
+        (_board[0][i] !== "" || _board[1][i] !== "" || _board[2][i] !== "") &&
+        _board[0][i] === _board[1][i] &&
+        _board[1][i] === _board[2][i]
+      ) {
+        return true;
+      }
+    }
+    // check for diagonals
+    if (
+      (_board[0][0] !== "" || _board[1][1] !== "" || _board[2][2] !== "") &&
+      _board[0][0] === _board[1][1] &&
+      _board[1][1] === _board[2][2]
+    ) {
+      return true;
+    }
+    if (
+      (_board[0][2] !== "" || _board[1][1] !== "" || _board[2][0] !== "") &&
+      _board[0][2] === _board[1][1] &&
+      _board[1][1] === _board[2][0]
+    ) {
+      return true;
+    }
+
+    return false; // default case
+  };
+
   const _makeMove = (row, col) => {
     if (_board[row][col] !== "") {
       console.log("Wrong move");
@@ -124,7 +162,7 @@ const gameBoard = (function () {
     } // Is Valid Move??
     // else continue
     _board[row][col] = _currentPlayer.getMarker();
-    console.log(_board);
+    _checkWinner();
     return true;
   };
 
@@ -195,5 +233,4 @@ function handleCellClick(e) {
   if (!gameBoard.makeMove(row, col)) return;
   displayController.updateMoveDOM(currentPlayer.getMarker(), e.target);
   gameBoard.updateCurrentPlayer();
-  console.log({ row, col });
 }
