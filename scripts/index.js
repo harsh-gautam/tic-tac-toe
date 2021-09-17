@@ -101,11 +101,7 @@ const gameBoard = (function () {
   let _p1;
   let _p2;
   let _currentPlayer = null;
-  let _board = [
-    ["", "", ""],
-    ["", "", ""],
-    ["", "", ""],
-  ];
+  let _board = ["", "", "", "", "", "", "", "", ""];
 
   const _setParameters = (p1, p2, mode, difficulty) => {
     _p1 = p1;
@@ -135,36 +131,38 @@ const gameBoard = (function () {
   const _getCurrentPlayer = () => _currentPlayer;
 
   const _isWinner = () => {
-    for (let i = 0; i < 3; i++) {
+    for (let i = 0; i < 7; i = i + 3) {
       // check for 3 in row
       if (
-        (_board[i][0] !== "" || _board[i][1] !== "" || _board[i][2] !== "") &&
-        _board[i][0] === _board[i][1] &&
-        _board[i][1] === _board[i][2]
+        _board[i] !== "" &&
+        _board[i] === _board[i + 1] &&
+        _board[i + 1] === _board[i + 2]
       ) {
         return true;
       }
+    }
+    for (let i = 0; i < 3; i++) {
       // check for 3 in column
       if (
-        (_board[0][i] !== "" || _board[1][i] !== "" || _board[2][i] !== "") &&
-        _board[0][i] === _board[1][i] &&
-        _board[1][i] === _board[2][i]
+        _board[i] !== "" &&
+        _board[i] === _board[i + 3] &&
+        _board[i + 3] === _board[i + 6]
       ) {
         return true;
       }
     }
     // check for diagonals
     if (
-      (_board[0][0] !== "" || _board[1][1] !== "" || _board[2][2] !== "") &&
-      _board[0][0] === _board[1][1] &&
-      _board[1][1] === _board[2][2]
+      _board[0] !== "" &&
+      _board[0] === _board[4] &&
+      _board[4] === _board[8]
     ) {
       return true;
     }
     if (
-      (_board[0][2] !== "" || _board[1][1] !== "" || _board[2][0] !== "") &&
-      _board[0][2] === _board[1][1] &&
-      _board[1][1] === _board[2][0]
+      _board[2] !== "" &&
+      _board[2] === _board[4] &&
+      _board[4] === _board[6]
     ) {
       return true;
     }
@@ -172,12 +170,13 @@ const gameBoard = (function () {
     return false; // default case
   };
 
-  const _makeMove = (row, col) => {
-    if (_board[row][col] !== "") return false; // Is Valid Move??
+  const _makeMove = (pos) => {
+    if (_board[pos] !== "") return false; // Is Valid Move??
     // else continue
     if (_currentPlayer.getWinStatus()) return false; // if there is already a winner don't make any moves
 
-    _board[row][col] = _currentPlayer.getMarker();
+    _board[pos] = _currentPlayer.getMarker();
+    console.log(_board);
     if (_isWinner()) {
       _currentPlayer.updateWinStatus(true);
     }
@@ -249,10 +248,9 @@ cells.forEach((cell) => {
 });
 
 function handleCellClick(e) {
-  const col = Number(e.target.dataset.col);
-  const row = Number(e.target.parentNode.dataset.row);
+  const pos = Number(e.target.dataset.position);
 
-  if (!gameBoard.makeMove(row, col)) return;
+  if (!gameBoard.makeMove(pos)) return;
 
   displayController.updateMoveDOM(
     gameBoard.getCurrentPlayer().getMarker(),
