@@ -2,12 +2,10 @@ const displayController = (function (document) {
   // Module
   const _startScreen = document.querySelector(".start-menu");
   const _gameScreen = document.querySelector(".game-wrapper");
-  const _newGameBtn = document.querySelector(".new-game");
   const _playerTwo = document.querySelector("#player-two");
   const _p1Name = document.querySelector(".p1-name");
   const _p2Name = document.querySelector(".p2-name");
   const _cells = document.querySelectorAll(".col");
-  const _form = document.querySelector("#form");
   const _p1Score = document.querySelector(".p1-score");
   const _p2Score = document.querySelector(".p2-score");
 
@@ -101,11 +99,6 @@ const displayController = (function (document) {
   const _setupDOM = () => {
     _attachPvC();
     _attachPvP();
-
-    _newGameBtn.addEventListener("click", () => {
-      _resetDOM();
-      toggleDisplay("newgame");
-    });
   };
 
   return {
@@ -342,7 +335,6 @@ function handleCellClick(e) {
             `Congratulations ${currentPlayer.getName()}! You won the game`
           );
         }
-        gameBoard.resetGame();
       }
     }, 5000);
 
@@ -355,6 +347,12 @@ function handleCellClick(e) {
   );
 }
 
+function handleNewGame() {
+  gameBoard.resetGame();
+  displayController.resetDOM();
+  displayController.toggleDisplay("newgame");
+}
+
 displayController.setupDOM();
 
 const form = document.querySelector("#form");
@@ -364,3 +362,6 @@ const cells = document.querySelectorAll(".col");
 cells.forEach((cell) => {
   displayController.setupEventListener(cell, "click", handleCellClick);
 });
+
+const newGameBtn = document.querySelector(".new-game");
+displayController.setupEventListener(newGameBtn, "click", handleNewGame);
