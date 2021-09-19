@@ -203,7 +203,7 @@ const gameBoard = (function () {
 
     if (_isWinner()) {
       _gameFinished = true;
-      _currentPlayer.updateWinStatus(true);
+      _currentPlayer.setWinStatus(true);
     }
     if (_isDraw()) {
       _gameFinished = true;
@@ -213,8 +213,8 @@ const gameBoard = (function () {
 
   const _resetRound = () => {
     _board = ["", "", "", "", "", "", "", "", ""];
-    _p1.updateWinStatus(false);
-    _p2.updateWinStatus(false);
+    _p1.setWinStatus(false);
+    _p2.setWinStatus(false);
     _gameFinished = false;
     if (p1.getMarker() === "x") {
       _p1.changeMarker("o");
@@ -252,16 +252,21 @@ const gameBoard = (function () {
   };
 })();
 
-const Player = (pname, marker, winner = false) => {
+const Player = (pname, marker) => {
+  let winner = false;
+  let winCount = 0;
   const getName = () => pname;
   const getMarker = () => marker;
   const changeMarker = (newMarker = "x") => {
     marker = newMarker;
   };
   const getWinStatus = () => winner;
-  const updateWinStatus = (s) => (winner = s);
+  const setWinStatus = (status) => (winner = status);
 
-  return { getName, getMarker, changeMarker, getWinStatus, updateWinStatus };
+  const getWinCount = () => winCount;
+  const updateWinCount = () => winCount++;
+
+  return { getName, getMarker, changeMarker, getWinStatus, setWinStatus };
 };
 
 const handleForm = (e) => {
