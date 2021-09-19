@@ -145,6 +145,14 @@ const gameBoard = (function () {
     else _currentPlayer = _p1;
   };
 
+  const _updateWinCount = () => {
+    if (_currentPlayer === _p1) {
+      _p1.incrementWinCount();
+    } else {
+      _p2.incrementWinCount();
+    }
+  };
+
   const _getCurrentPlayer = () => _currentPlayer;
 
   const _isWinner = () => {
@@ -192,6 +200,14 @@ const gameBoard = (function () {
       if (_board[i] === "") return false;
     }
     return true;
+  };
+
+  const _decideFinalWinner = () => {
+    if (_p1.getWinCount() > _p2.getWinCount()) {
+      return _p1.getName();
+    } else {
+      return _p2.getName();
+    }
   };
 
   const _makeMove = (pos) => {
@@ -247,8 +263,10 @@ const gameBoard = (function () {
     isGameFinished: () => _gameFinished,
     getRound: () => _round,
     updateRound: () => _round++,
+    updateWinCount: _updateWinCount,
     resetRound: _resetRound,
     resetGame: _resetGame,
+    decideFinalWinner: _decideFinalWinner,
   };
 })();
 
@@ -264,9 +282,17 @@ const Player = (pname, marker) => {
   const setWinStatus = (status) => (winner = status);
 
   const getWinCount = () => winCount;
-  const updateWinCount = () => winCount++;
+  const incrementWinCount = () => winCount++;
 
-  return { getName, getMarker, changeMarker, getWinStatus, setWinStatus };
+  return {
+    getName,
+    getMarker,
+    changeMarker,
+    getWinStatus,
+    setWinStatus,
+    getWinCount,
+    incrementWinCount,
+  };
 };
 
 const handleForm = (e) => {
@@ -321,6 +347,7 @@ function handleCellClick(e) {
         `${currentPlayer.getName()} wins the round!`
       );
       displayController.addStar(currentPlayer.getName());
+      gameBoard.updateWinCount();
     }
 
     setTimeout(() => {
@@ -333,11 +360,13 @@ function handleCellClick(e) {
           gameBoard.getCurrentPlayer().getName()
         );
       } else {
-        if (currentPlayer.getName() === "AI") {
+        const finalWinner = gameBoard.decideFinalWinner();
+        console.log(finalWinner);
+        if (finalWinner === "AI") {
           displayController.updateInfoText(`You lost against AI. Bad Luck!`);
         } else {
           displayController.updateInfoText(
-            `Congratulations ${currentPlayer.getName()}! You won the game`
+            `Congratulations ${finalWinner}! You won the game`
           );
         }
       }
