@@ -46,6 +46,16 @@ const displayController = (function (document) {
     _infoDiv.textContent = text;
   };
 
+  const _addStar = (name) => {
+    if (_p1Name.textContent.search(name) !== -1) {
+      const _p1Score = document.querySelector(".p1-score");
+      _p1Score.innerHTML = `<i class="bi bi-star-fill"></i>`;
+    } else {
+      const _p2Score = document.querySelector(".p2-score");
+      _p2Score.innerHTML = `<i class="bi bi-star-fill"></i>`;
+    }
+  };
+
   const updateCurrentPlayerDOM = (name) => {
     if (name === _p1Name.textContent) {
       _p1Name.classList.add("current");
@@ -54,6 +64,10 @@ const displayController = (function (document) {
       _p2Name.classList.add("current");
       _p1Name.classList.remove("current");
     }
+  };
+
+  const _resetBoardDOM = (cells) => {
+    cells.forEach((cell) => (cell.textContent = ""));
   };
 
   const setupEventListener = (element, eventType, eventHandler) => {
@@ -92,6 +106,8 @@ const displayController = (function (document) {
     updateMoveDOM: _updateMoveDom,
     updateInfoText: _updateInfoText,
     updateCurrentPlayerDOM,
+    resetBoardDOM: _resetBoardDOM,
+    addStar: _addStar,
   };
 })(document);
 
@@ -100,6 +116,7 @@ const gameBoard = (function () {
   let _difficulty;
   let _p1;
   let _p2;
+  let _round = 1;
   let _gameFinished = false;
   let _currentPlayer = null;
   let _board = ["", "", "", "", "", "", "", "", ""];
@@ -191,6 +208,22 @@ const gameBoard = (function () {
     return true;
   };
 
+  const _resetRound = () => {
+    _board = ["", "", "", "", "", "", "", "", ""];
+    _p1.updateWinStatus(false);
+    _p2.updateWinStatus(false);
+    _gameFinished = false;
+    if (p1.getMarker() === "x") {
+      _p1.changeMarker("o");
+      _p2.changeMarker("x");
+      _currentPlayer = p2;
+    } else {
+      _p1.changeMarker("x");
+      _p2.changeMarker("o");
+      _currentPlayer = p1;
+    }
+  };
+
   return {
     setParameters: _setParameters,
     getParameters: _getParameters,
@@ -198,6 +231,9 @@ const gameBoard = (function () {
     updateCurrentPlayer: _updateCurrentPlayer,
     makeMove: _makeMove,
     isGameFinished: () => _gameFinished,
+    getRound: () => _round,
+    updateRound: () => _round++,
+    resetRound: _resetRound,
   };
 })();
 
@@ -258,7 +294,7 @@ cells.forEach((cell) => {
 function handleCellClick(e) {
   const pos = Number(e.target.dataset.position);
 
-  if (!gameBoard.makeMove(pos)) return;
+  if (!gameBoard.makeMove(pos) || gameBoard.getRound() > 3) return;
 
   const currentPlayer = gameBoard.getCurrentPlayer();
 
@@ -266,15 +302,40 @@ function handleCellClick(e) {
 
   if (gameBoard.isGameFinished()) {
     // if true winner is decided
+
+    // check if it's a draw or someone won
     if (!currentPlayer.getWinStatus()) {
       displayController.updateInfoText("It's a draw!");
-      return;
+    } else {
+      displayController.updateInfoText(
+        `${currentPlayer.getName()} wins the round!`
+      );
+      displayController.addStar(currentPlayer.getName());
     }
-    displayController.updateInfoText(
-      `${currentPlayer.getName()} wins the game!`
-    );
+
+    setTimeout(() => {
+      if (gameBoard.getRound() < 3) {
+        gameBoard.updateRound();
+        gameBoard.resetRound();
+        displayController.resetBoardDOM(cells);
+        displayController.updateInfoText(`Round ${gameBoard.getRound()}`);
+        displayController.updateCurrentPlayerDOM(
+          gameBoard.getCurrentPlayer().getName()
+        );
+      } else {
+        if (currentPlayer.getName() === "AI") {
+          displayController.updateInfoText(`You lost against AI. Bad Luck!`);
+        } else {
+          displayController.updateInfoText(
+            `Congratulations ${currentPlayer.getName()}! You won the game`
+          );
+        }
+      }
+    }, 5000);
+
     return;
   }
+
   gameBoard.updateCurrentPlayer();
   displayController.updateCurrentPlayerDOM(
     gameBoard.getCurrentPlayer().getName()
