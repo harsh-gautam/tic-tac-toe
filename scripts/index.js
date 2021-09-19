@@ -6,6 +6,10 @@ const displayController = (function (document) {
   const _playerTwo = document.querySelector("#player-two");
   const _p1Name = document.querySelector(".p1-name");
   const _p2Name = document.querySelector(".p2-name");
+  const _cells = document.querySelectorAll(".col");
+  const _form = document.querySelector("#form");
+  const _p1Score = document.querySelector(".p1-score");
+  const _p2Score = document.querySelector(".p2-score");
 
   const toggleDisplay = (type) => {
     if (type == "form") {
@@ -47,12 +51,12 @@ const displayController = (function (document) {
   };
 
   const _addStar = (name) => {
+    const star = document.createElement("i");
+    star.classList.add("bi", "bi-star-fill");
     if (_p1Name.textContent.search(name) !== -1) {
-      const _p1Score = document.querySelector(".p1-score");
-      _p1Score.innerHTML = `<i class="bi bi-star-fill"></i>`;
+      _p1Score.appendChild(star);
     } else {
-      const _p2Score = document.querySelector(".p2-score");
-      _p2Score.innerHTML = `<i class="bi bi-star-fill"></i>`;
+      _p2Score.appendChild(star);
     }
   };
 
@@ -66,8 +70,11 @@ const displayController = (function (document) {
     }
   };
 
-  const _resetBoardDOM = (cells) => {
-    cells.forEach((cell) => (cell.textContent = ""));
+  const _resetDOM = () => {
+    _cells.forEach((cell) => (cell.textContent = ""));
+    _updateInfoText(" ");
+    _p1Score.innerHTML = "";
+    _p2Score.innerHTML = "";
   };
 
   const setupEventListener = (element, eventType, eventHandler) => {
@@ -95,7 +102,10 @@ const displayController = (function (document) {
     _attachPvC();
     _attachPvP();
 
-    _newGameBtn.addEventListener("click", () => toggleDisplay("newgame"));
+    _newGameBtn.addEventListener("click", () => {
+      _resetDOM();
+      toggleDisplay("newgame");
+    });
   };
 
   return {
@@ -106,7 +116,7 @@ const displayController = (function (document) {
     updateMoveDOM: _updateMoveDom,
     updateInfoText: _updateInfoText,
     updateCurrentPlayerDOM,
-    resetBoardDOM: _resetBoardDOM,
+    resetDOM: _resetDOM,
     addStar: _addStar,
   };
 })(document);
@@ -224,6 +234,17 @@ const gameBoard = (function () {
     }
   };
 
+  const _resetGame = () => {
+    _board = ["", "", "", "", "", "", "", "", ""];
+    _p1 = null;
+    _p2 = null;
+    _mode = null;
+    _difficulty = null;
+    _round = 1;
+    _gameFinished = false;
+    _currentPlayer = null;
+  };
+
   return {
     setParameters: _setParameters,
     getParameters: _getParameters,
@@ -234,6 +255,7 @@ const gameBoard = (function () {
     getRound: () => _round,
     updateRound: () => _round++,
     resetRound: _resetRound,
+    resetGame: _resetGame,
   };
 })();
 
@@ -281,16 +303,6 @@ function startGame() {
   );
 }
 
-displayController.setupDOM();
-
-const form = document.querySelector("#form");
-displayController.setupEventListener(form, "submit", handleForm);
-
-const cells = document.querySelectorAll(".col");
-cells.forEach((cell) => {
-  displayController.setupEventListener(cell, "click", handleCellClick);
-});
-
 function handleCellClick(e) {
   const pos = Number(e.target.dataset.position);
 
@@ -317,7 +329,7 @@ function handleCellClick(e) {
       if (gameBoard.getRound() < 3) {
         gameBoard.updateRound();
         gameBoard.resetRound();
-        displayController.resetBoardDOM(cells);
+        cells.forEach((cell) => (cell.textContent = ""));
         displayController.updateInfoText(`Round ${gameBoard.getRound()}`);
         displayController.updateCurrentPlayerDOM(
           gameBoard.getCurrentPlayer().getName()
@@ -330,6 +342,7 @@ function handleCellClick(e) {
             `Congratulations ${currentPlayer.getName()}! You won the game`
           );
         }
+        gameBoard.resetGame();
       }
     }, 5000);
 
@@ -341,3 +354,13 @@ function handleCellClick(e) {
     gameBoard.getCurrentPlayer().getName()
   );
 }
+
+displayController.setupDOM();
+
+const form = document.querySelector("#form");
+displayController.setupEventListener(form, "submit", handleForm);
+
+const cells = document.querySelectorAll(".col");
+cells.forEach((cell) => {
+  displayController.setupEventListener(cell, "click", handleCellClick);
+});
