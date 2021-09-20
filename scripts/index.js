@@ -210,6 +210,11 @@ const gameBoard = (function () {
     }
   };
 
+  const _isValidMove = (pos) => {
+    if (_board[pos] !== "") return false;
+    return true;
+  };
+
   const _makeMove = (pos) => {
     if (_board[pos] !== "") return false; // Is Valid Move??
     // else continue
@@ -260,6 +265,7 @@ const gameBoard = (function () {
     getCurrentPlayer: _getCurrentPlayer,
     updateCurrentPlayer: _updateCurrentPlayer,
     makeMove: _makeMove,
+    isValidMove: _isValidMove,
     isGameFinished: () => _gameFinished,
     getRound: () => _round,
     updateRound: () => _round++,
@@ -293,6 +299,24 @@ const Player = (pname, marker) => {
     getWinCount,
     incrementWinCount,
   };
+};
+
+const makeAIMove = (type) => {
+  console.log("Making AI Move");
+  let validMove = false;
+  let pos;
+  while (validMove !== true) {
+    pos = Math.floor(Math.random() * 7);
+    if (gameBoard.isValidMove(pos)) {
+      validMove = true;
+    }
+  }
+
+  const cells = document.querySelectorAll(".col");
+  const cell = Array.from(cells).filter((cell) => {
+    if (Number(cell.dataset.position) === pos) return cell;
+  });
+  cell[0].click();
 };
 
 const handleForm = (e) => {
@@ -359,6 +383,12 @@ function handleCellClick(e) {
         displayController.updateCurrentPlayerDOM(
           gameBoard.getCurrentPlayer().getName()
         );
+        // after round ends check if current player is AI if yes than make move after 2s
+        setTimeout(() => {
+          if (gameBoard.getCurrentPlayer().getName() === "AI") {
+            makeAIMove("easy");
+          }
+        }, 2000);
       } else {
         const finalWinner = gameBoard.decideFinalWinner();
         console.log(finalWinner);
@@ -379,6 +409,11 @@ function handleCellClick(e) {
   displayController.updateCurrentPlayerDOM(
     gameBoard.getCurrentPlayer().getName()
   );
+
+  // if next player is AI make an automatic move
+  if (gameBoard.getCurrentPlayer().getName() === "AI") {
+    makeAIMove("easy");
+  }
 }
 
 function handleNewGame() {
