@@ -79,36 +79,30 @@ const displayController = (function (document) {
     element.addEventListener(eventType, eventHandler);
   };
 
-  const _attachPvC = () => {
+  const _setupDOM = () => {
     const pvc = document.querySelector("#mode-pvc");
+    const pvp = document.querySelector("#mode-pvp");
+    const diffChooser = document.querySelector(".diff-chooser");
+
     pvc.addEventListener("click", () => {
       _playerTwo.value = "AI";
       _playerTwo.disabled = true;
-      const diffChooser = document.querySelector(".diff-chooser");
       diffChooser.style.display = "flex";
     });
-  };
 
-  const _attachPvP = () => {
-    const pvp = document.querySelector("#mode-pvp");
     pvp.addEventListener("click", () => {
       _playerTwo.disabled = false;
       _playerTwo.value = "";
       _playerTwo.focus();
-      const diffChooser = document.querySelector(".diff-chooser");
       diffChooser.style.display = "none";
     });
   };
 
-  const _setupDOM = () => {
-    _attachPvC();
-    _attachPvP();
-  };
+  _setupDOM();
 
   return {
     setupEventListener,
     toggleDisplay,
-    setupDOM: _setupDOM,
     updatePlayerNames: _updatePlayerNames,
     updateMoveDOM: _updateMoveDom,
     updateInfoText: _updateInfoText,
@@ -405,8 +399,6 @@ function handleNewGame() {
   displayController.resetDOM();
   displayController.toggleDisplay("newgame");
 }
-
-displayController.setupDOM();
 
 const form = document.querySelector("#form");
 displayController.setupEventListener(form, "submit", handleForm);
