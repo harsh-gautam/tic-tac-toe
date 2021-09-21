@@ -84,6 +84,8 @@ const displayController = (function (document) {
     pvc.addEventListener("click", () => {
       _playerTwo.value = "AI";
       _playerTwo.disabled = true;
+      const diffChooser = document.querySelector(".diff-chooser");
+      diffChooser.style.display = "flex";
     });
   };
 
@@ -93,6 +95,8 @@ const displayController = (function (document) {
       _playerTwo.disabled = false;
       _playerTwo.value = "";
       _playerTwo.focus();
+      const diffChooser = document.querySelector(".diff-chooser");
+      diffChooser.style.display = "none";
     });
   };
 

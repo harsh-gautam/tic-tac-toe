@@ -63,6 +63,10 @@ body {
   margin: 5% 0;
 }
 
+.diff-chooser {
+  display: none;
+}
+
 .radio-container {
   display: block;
   position: relative;
