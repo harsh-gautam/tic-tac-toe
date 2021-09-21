@@ -1,117 +1,124 @@
-const evaluate = (board, moves) => {
-  let score = null;
-  for (let i = 0; i < 7; i = i + 3) {
-    // check for 3 in row
-    if (
-      board[i] !== "" &&
-      board[i] === board[i + 1] &&
-      board[i + 1] === board[i + 2]
-    ) {
-      if (board[i] === moves.ai) {
+const MiniMax = () => {
+  const _evaluate = (board, moves) => {
+    let score = null;
+    for (let i = 0; i < 7; i = i + 3) {
+      // check for 3 in row
+      if (
+        board[i] !== "" &&
+        board[i] === board[i + 1] &&
+        board[i + 1] === board[i + 2]
+      ) {
+        if (board[i] === moves.ai) {
+          score = 10;
+        } else {
+          score = -10;
+        }
+      }
+    }
+    for (let i = 0; i < 3; i++) {
+      // check for 3 in column
+      if (
+        board[i] !== "" &&
+        board[i] === board[i + 3] &&
+        board[i + 3] === board[i + 6]
+      ) {
+        if (board[i] === moves.ai) {
+          score = 10;
+        } else {
+          score = -10;
+        }
+      }
+    }
+    // check for diagonals
+    if (board[0] !== "" && board[0] === board[4] && board[4] === board[8]) {
+      if (board[0] === moves.ai) {
         score = 10;
       } else {
         score = -10;
       }
     }
-  }
-  for (let i = 0; i < 3; i++) {
-    // check for 3 in column
-    if (
-      board[i] !== "" &&
-      board[i] === board[i + 3] &&
-      board[i + 3] === board[i + 6]
-    ) {
-      if (board[i] === moves.ai) {
+    if (board[2] !== "" && board[2] === board[4] && board[4] === board[6]) {
+      if (board[2] === moves.ai) {
         score = 10;
       } else {
         score = -10;
       }
     }
-  }
-  // check for diagonals
-  if (board[0] !== "" && board[0] === board[4] && board[4] === board[8]) {
-    if (board[0] === moves.ai) {
-      score = 10;
+
+    let openSlots = 0;
+    for (let i = 0; i < 9; i++) {
+      if (board[i] === "") openSlots++;
+    }
+    if (score === null && openSlots === 0) {
+      score = 0;
+    }
+
+    return score;
+  };
+
+  const hard = (board, depth, isMaximizer, moves) => {
+    let score = _evaluate(board, moves);
+    if (score === 10 || score === -10 || score === 0) return score;
+
+    if (isMaximizer) {
+      let bestScore = -1000000;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === "") {
+          board[i] = moves.ai;
+          let score = hard(board, depth + 1, false, moves);
+          board[i] = "";
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+      return bestScore;
     } else {
-      score = -10;
+      let bestScore = 1000000;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === "") {
+          board[i] = moves.human;
+          let score = hard(board, depth + 1, true, moves);
+          board[i] = "";
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+      return bestScore;
     }
-  }
-  if (board[2] !== "" && board[2] === board[4] && board[4] === board[6]) {
-    if (board[2] === moves.ai) {
-      score = 10;
+  };
+
+  const medium = (board, depth, isMaximizer, moves) => {
+    let score = _evaluate(board, moves);
+    if (score === 10 || score === -10 || score === 0 || depth === 0)
+      return score;
+
+    if (isMaximizer) {
+      let bestScore = -1000000;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === "") {
+          board[i] = moves.ai;
+          let score = medium(board, depth - 1, false, moves);
+          board[i] = "";
+          bestScore = Math.max(score, bestScore);
+        }
+      }
+      return bestScore;
     } else {
-      score = -10;
+      let bestScore = 1000000;
+      for (let i = 0; i < 9; i++) {
+        if (board[i] === "") {
+          board[i] = moves.human;
+          let score = medium(board, depth - 1, true, moves);
+          board[i] = "";
+          bestScore = Math.min(score, bestScore);
+        }
+      }
+      return bestScore;
     }
-  }
+  };
 
-  let openSlots = 0;
-  for (let i = 0; i < 9; i++) {
-    if (board[i] === "") openSlots++;
-  }
-  if (score === null && openSlots === 0) {
-    score = 0;
-  }
-
-  return score;
+  return { hard, medium };
 };
 
-const minimaxHard = (board, depth, isMaximizer, moves) => {
-  let score = evaluate(board, moves);
-  if (score === 10 || score === -10 || score === 0) return score;
-
-  if (isMaximizer) {
-    let bestScore = -1000000;
-    for (let i = 0; i < 9; i++) {
-      if (board[i] === "") {
-        board[i] = moves.ai;
-        let score = minimaxHard(board, depth + 1, false, moves);
-        board[i] = "";
-        bestScore = Math.max(score, bestScore);
-      }
-    }
-    return bestScore;
-  } else {
-    let bestScore = 1000000;
-    for (let i = 0; i < 9; i++) {
-      if (board[i] === "") {
-        board[i] = moves.human;
-        let score = minimaxHard(board, depth + 1, true, moves);
-        board[i] = "";
-        bestScore = Math.min(score, bestScore);
-      }
-    }
-    return bestScore;
-  }
-};
-
-const minimaxMedium = (board, depth, isMaximizer, moves) => {
-  let score = evaluate(board, moves);
-  if (score === 10 || score === -10 || score === 0 || depth === 0) return score;
-
-  if (isMaximizer) {
-    let bestScore = -1000000;
-    for (let i = 0; i < 9; i++) {
-      if (board[i] === "") {
-        board[i] = moves.ai;
-        let score = minimaxMedium(board, depth - 1, false, moves);
-        board[i] = "";
-        bestScore = Math.max(score, bestScore);
-      }
-    }
-    return bestScore;
-  } else {
-    let bestScore = 1000000;
-    for (let i = 0; i < 9; i++) {
-      if (board[i] === "") {
-        board[i] = moves.human;
-        let score = minimaxMedium(board, depth - 1, true, moves);
-        board[i] = "";
-        bestScore = Math.min(score, bestScore);
-      }
-    }
-    return bestScore;
-  }
-};
+const minimax = MiniMax();
 
 const clickCell = (position) => {
   const cells = document.querySelectorAll(".col");
@@ -141,7 +148,7 @@ const makeAIMove = (type) => {
     for (let i = 0; i < 9; i++) {
       if (boardCopy[i] === "") {
         boardCopy[i] = ai;
-        let score = minimaxMedium(boardCopy, 2, false, moves);
+        let score = minimax.medium(boardCopy, 2, false, moves);
         boardCopy[i] = "";
         if (score > bestScore) {
           bestScore = score;
@@ -155,7 +162,7 @@ const makeAIMove = (type) => {
     for (let i = 0; i < 9; i++) {
       if (boardCopy[i] === "") {
         boardCopy[i] = ai;
-        let score = minimaxHard(boardCopy, 0, false, moves);
+        let score = minimax.hard(boardCopy, 0, false, moves);
         boardCopy[i] = "";
         if (score > bestScore) {
           bestScore = score;
