@@ -115,7 +115,6 @@ const displayController = (function (document) {
 })(document);
 
 const gameBoard = (function () {
-  let _mode;
   let _difficulty;
   let _p1;
   let _p2;
@@ -124,10 +123,9 @@ const gameBoard = (function () {
   let _currentPlayer = null;
   let _board = ["", "", "", "", "", "", "", "", ""];
 
-  const _setParameters = (p1, p2, mode, difficulty) => {
+  const _setParameters = (p1, p2, difficulty) => {
     _p1 = p1;
     _p2 = p2;
-    _mode = mode;
     _difficulty = difficulty;
   };
 
@@ -135,7 +133,6 @@ const gameBoard = (function () {
     return {
       p1: _p1,
       p2: _p2,
-      mode: _mode,
       difficulty: _difficulty,
     };
   };
@@ -308,7 +305,6 @@ const handleForm = (e) => {
   // get form values
   const p1Name = e.target.playerone.value;
   const p2Name = e.target.playertwo.value;
-  const gameMode = e.target.mode.value;
   const difficulty = e.target.difficulty.value;
 
   // create players
@@ -316,7 +312,7 @@ const handleForm = (e) => {
   p2 = Player(p2Name, "o");
 
   // create game state
-  gameBoard.setParameters(p1, p2, gameMode, difficulty);
+  gameBoard.setParameters(p1, p2, difficulty);
   game = gameBoard.getParameters();
 
   // display the board
