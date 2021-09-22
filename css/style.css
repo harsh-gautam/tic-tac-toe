@@ -7,7 +7,7 @@ body {
 }
 
 #header {
-  height: 15%;
+  height: 15vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -35,7 +35,7 @@ body {
 }
 
 #container {
-  height: 75%;
+  height: 75vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -151,6 +151,20 @@ body {
 
 .submit-button:hover {
   background-color: #caf0f8;
+}
+
+#footer {
+  display: flex;
+  justify-content: center;
+  color: #caf0f8;
+}
+#footer a {
+  color: #caf0f8;
+  text-decoration: none;
+}
+#footer a:hover {
+  text-decoration: underline;
+  color: #81e0f1;
 }
 
 @media screen and (max-width: 420px) {
