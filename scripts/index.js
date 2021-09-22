@@ -9,8 +9,7 @@ const displayController = (function (document) {
   const toggleDisplay = (type) => {
     const gameScreen = document.querySelector(".game-wrapper");
     const startScreen = document.querySelector(".start-menu");
-    const form = document.querySelector("#form");
-    const boardWrapper = document.querySelector(".board-wrapper");
+    const footer = document.querySelector("#footer");
 
     if (type == "form") {
       startScreen.style.height = "0";
@@ -18,12 +17,14 @@ const displayController = (function (document) {
 
       gameScreen.style.opacity = "1";
       gameScreen.style.height = "auto";
+      footer.style.display = "none";
     } else if (type === "newgame" || type === "exit") {
       gameScreen.style.opacity = "0";
       gameScreen.style.height = "0";
 
       startScreen.style.opacity = "1";
       startScreen.style.height = "auto";
+      footer.style.display = "flex";
     }
   };
 
