@@ -319,6 +319,7 @@ const handleForm = (e) => {
 
   // Start Game
   displayController.setPlayerNames(p1.getName(), p2.getName());
+  displayController.updateInfoText("Round 1");
   gameBoard.updateCurrentPlayer();
   displayController.updateCurrentPlayerDOM(
     gameBoard.getCurrentPlayer().getName()
