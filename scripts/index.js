@@ -1,8 +1,5 @@
 const displayController = (function (document) {
   // Module
-  const _startScreen = document.querySelector(".start-menu");
-  const _gameScreen = document.querySelector(".game-wrapper");
-  const _playerTwo = document.querySelector("#player-two");
   const _p1Name = document.querySelector(".p1-name");
   const _p2Name = document.querySelector(".p2-name");
   const _cells = document.querySelectorAll(".col");
@@ -10,16 +7,19 @@ const displayController = (function (document) {
   const _p2Score = document.querySelector(".p2-score");
 
   const toggleDisplay = (type) => {
+    const gameScreen = document.querySelector(".game-wrapper");
+    const startScreen = document.querySelector(".start-menu");
+
     if (type == "form") {
-      _startScreen.style.display = "none";
-      _gameScreen.style.display = "flex";
+      startScreen.style.display = "none";
+      gameScreen.style.display = "flex";
     } else if (type === "newgame" || type === "exit") {
-      _startScreen.style.display = "flex";
-      _gameScreen.style.display = "none";
+      startScreen.style.display = "flex";
+      gameScreen.style.display = "none";
     }
   };
 
-  const _updatePlayerNames = (p1Name, p2Name) => {
+  const _setPlayerNames = (p1Name, p2Name) => {
     _p1Name.innerHTML = "";
     _p2Name.innerHTML = "";
     _p1Name.insertAdjacentHTML(
@@ -43,18 +43,19 @@ const displayController = (function (document) {
     target.textContent = marker.toUpperCase();
   };
 
-  const _updateInfoText = (text) => {
+  const _updateInfoText = (text, name = null) => {
     const _infoDiv = document.querySelector(".info-text");
     _infoDiv.textContent = text;
-  };
 
-  const _addStar = (name) => {
-    const star = document.createElement("i");
-    star.classList.add("bi", "bi-star-fill");
-    if (_p1Name.textContent.search(name) !== -1) {
-      _p1Score.appendChild(star);
-    } else {
-      _p2Score.appendChild(star);
+    if (name !== null) {
+      // In case of UI update when there is a winner
+      const _star = document.createElement("i");
+      _star.classList.add("bi", "bi-star-fill");
+      if (_p1Name.textContent.search(name) !== -1) {
+        _p1Score.appendChild(_star);
+      } else {
+        _p2Score.appendChild(_star);
+      }
     }
   };
 
@@ -82,6 +83,7 @@ const displayController = (function (document) {
   const _setupDOM = () => {
     const pvc = document.querySelector("#mode-pvc");
     const pvp = document.querySelector("#mode-pvp");
+    const _playerTwo = document.querySelector("#player-two");
     const diffChooser = document.querySelector(".diff-chooser");
 
     pvc.addEventListener("click", () => {
@@ -103,12 +105,11 @@ const displayController = (function (document) {
   return {
     setupEventListener,
     toggleDisplay,
-    updatePlayerNames: _updatePlayerNames,
+    setPlayerNames: _setPlayerNames,
     updateMoveDOM: _updateMoveDom,
     updateInfoText: _updateInfoText,
     updateCurrentPlayerDOM,
     resetDOM: _resetDOM,
-    addStar: _addStar,
   };
 })(document);
 
@@ -117,7 +118,6 @@ const gameBoard = (function () {
   let _p1;
   let _p2;
   let _round = 1;
-  let _gameFinished = false;
   let _currentPlayer = null;
   let _board = ["", "", "", "", "", "", "", "", ""];
 
@@ -127,11 +127,12 @@ const gameBoard = (function () {
     _difficulty = difficulty;
   };
 
-  const _getParameters = () => {
+  const _getGameParams = () => {
     return {
-      p1: _p1,
-      p2: _p2,
+      board: _board,
       difficulty: _difficulty,
+      currentPlayer: _currentPlayer,
+      round: _round,
     };
   };
 
@@ -148,9 +149,8 @@ const gameBoard = (function () {
     }
   };
 
-  const _getCurrentPlayer = () => _currentPlayer;
-
-  const _isWinner = () => {
+  const _gameFinished = () => {
+    let finished = false;
     for (let i = 0; i < 7; i = i + 3) {
       // check for 3 in row
       if (
@@ -158,7 +158,7 @@ const gameBoard = (function () {
         _board[i] === _board[i + 1] &&
         _board[i + 1] === _board[i + 2]
       ) {
-        return true;
+        finished = true;
       }
     }
     for (let i = 0; i < 3; i++) {
@@ -168,7 +168,7 @@ const gameBoard = (function () {
         _board[i] === _board[i + 3] &&
         _board[i + 3] === _board[i + 6]
       ) {
-        return true;
+        finished = true;
       }
     }
     // check for diagonals
@@ -177,24 +177,26 @@ const gameBoard = (function () {
       _board[0] === _board[4] &&
       _board[4] === _board[8]
     ) {
-      return true;
+      finished = true;
     }
     if (
       _board[2] !== "" &&
       _board[2] === _board[4] &&
       _board[4] === _board[6]
     ) {
+      finished = true;
+    }
+
+    if (finished === true) {
+      _currentPlayer.setWinStatus(true);
+      return true;
+    } else {
+      // Game is draw??
+      for (let i = 0; i < 9; i++) {
+        if (_board[i] === "") return false;
+      }
       return true;
     }
-
-    return false; // default case
-  };
-
-  const _isDraw = () => {
-    for (let i = 0; i < 9; i++) {
-      if (_board[i] === "") return false;
-    }
-    return true;
   };
 
   const _decideFinalWinner = () => {
@@ -211,27 +213,19 @@ const gameBoard = (function () {
   };
 
   const _makeMove = (pos) => {
-    if (_board[pos] !== "") return false; // Is Valid Move??
+    // if there is already a winner don't make any moves or not a valid move then exit
+    if (!_isValidMove(pos) || _currentPlayer.isWinner()) return false;
     // else continue
-    if (_currentPlayer.getWinStatus()) return false; // if there is already a winner don't make any moves
 
     _board[pos] = _currentPlayer.getMarker();
 
-    if (_isWinner()) {
-      _gameFinished = true;
-      _currentPlayer.setWinStatus(true);
-    }
-    if (_isDraw()) {
-      _gameFinished = true;
-    }
     return true;
   };
 
-  const _resetRound = () => {
+  const _resetRoundInfo = () => {
     _board = ["", "", "", "", "", "", "", "", ""];
     _p1.setWinStatus(false);
     _p2.setWinStatus(false);
-    _gameFinished = false;
     if (p1.getMarker() === "x") {
       _p1.changeMarker("o");
       _p2.changeMarker("x");
@@ -247,27 +241,22 @@ const gameBoard = (function () {
     _board = ["", "", "", "", "", "", "", "", ""];
     _p1 = null;
     _p2 = null;
-    _mode = null;
     _difficulty = null;
     _round = 1;
-    _gameFinished = false;
     _currentPlayer = null;
   };
 
   return {
     setParameters: _setParameters,
-    getParameters: _getParameters,
-    getCurrentPlayer: _getCurrentPlayer,
+    getGameParams: _getGameParams,
     updateCurrentPlayer: _updateCurrentPlayer,
-    getBoard: () => _board,
-    getDifficulty: () => _difficulty,
+    getCurrentPlayer: () => _currentPlayer,
     makeMove: _makeMove,
     isValidMove: _isValidMove,
-    isGameFinished: () => _gameFinished,
-    getRound: () => _round,
-    updateRound: () => _round++,
+    isGameFinished: _gameFinished,
+    updateRound: () => ++_round,
     updateWinCount: _updateWinCount,
-    resetRound: _resetRound,
+    resetRoundInfo: _resetRoundInfo,
     resetGame: _resetGame,
     decideFinalWinner: _decideFinalWinner,
   };
@@ -281,7 +270,7 @@ const Player = (pname, marker) => {
   const changeMarker = (newMarker = "x") => {
     marker = newMarker;
   };
-  const getWinStatus = () => winner;
+  const isWinner = () => winner;
   const setWinStatus = (status) => (winner = status);
 
   const getWinCount = () => winCount;
@@ -291,7 +280,7 @@ const Player = (pname, marker) => {
     getName,
     getMarker,
     changeMarker,
-    getWinStatus,
+    isWinner,
     setWinStatus,
     getWinCount,
     incrementWinCount,
@@ -311,86 +300,78 @@ const handleForm = (e) => {
 
   // create game state
   gameBoard.setParameters(p1, p2, difficulty);
-  game = gameBoard.getParameters();
 
   // display the board
   displayController.toggleDisplay("form");
-  startGame();
-};
 
-function startGame() {
-  displayController.updatePlayerNames(game.p1.getName(), game.p2.getName());
-  // displayController.updateCurrentPlayer(
-  //   gameBoard.getCurrentPlayer().getMarker()
-  // );
+  // Start Game
+  displayController.setPlayerNames(p1.getName(), p2.getName());
   gameBoard.updateCurrentPlayer();
   displayController.updateCurrentPlayerDOM(
     gameBoard.getCurrentPlayer().getName()
   );
-}
+};
 
 function handleCellClick(e) {
   const pos = Number(e.target.dataset.position);
+  let { round, difficulty } = gameBoard.getGameParams();
+  let currentPlayer = gameBoard.getCurrentPlayer();
 
-  if (!gameBoard.makeMove(pos) || gameBoard.getRound() > 3) return;
-
-  const currentPlayer = gameBoard.getCurrentPlayer();
+  if (!gameBoard.makeMove(pos) || round > 3) return;
 
   displayController.updateMoveDOM(currentPlayer.getMarker(), e.target);
 
-  if (gameBoard.isGameFinished()) {
+  if (gameBoard.isGameFinished() === true) {
     // if true winner is decided
 
     // check if it's a draw or someone won
-    if (!currentPlayer.getWinStatus()) {
+    if (!currentPlayer.isWinner()) {
       displayController.updateInfoText("It's a draw!");
     } else {
       displayController.updateInfoText(
-        `${currentPlayer.getName()} wins the round!`
+        `${currentPlayer.getName()} wins the round!`,
+        currentPlayer.getName()
       );
-      displayController.addStar(currentPlayer.getName());
       gameBoard.updateWinCount();
     }
 
     setTimeout(() => {
-      if (gameBoard.getRound() < 3) {
-        gameBoard.updateRound();
-        gameBoard.resetRound();
+      if (round < 3) {
+        // Round 1, 2 or 3
+        round = gameBoard.updateRound();
+        gameBoard.resetRoundInfo();
         cells.forEach((cell) => (cell.textContent = ""));
-        displayController.updateInfoText(`Round ${gameBoard.getRound()}`);
-        displayController.updateCurrentPlayerDOM(
-          gameBoard.getCurrentPlayer().getName()
-        );
-        // after round ends check if current player is AI if yes than make move after 2s
+        displayController.updateInfoText(`Round ${round}`);
+        currentPlayer = gameBoard.getCurrentPlayer();
+        displayController.updateCurrentPlayerDOM(currentPlayer.getName());
+        // after round ends check if current player is AI if yes than make move after 1s
         setTimeout(() => {
-          if (gameBoard.getCurrentPlayer().getName() === "AI") {
-            makeAIMove(gameBoard.getDifficulty());
+          if (currentPlayer.getName() === "AI") {
+            makeAIMove(difficulty);
           }
-        }, 2000);
+        }, 1000);
       } else {
         const finalWinner = gameBoard.decideFinalWinner();
-        console.log(finalWinner);
         if (finalWinner === "AI") {
-          displayController.updateInfoText(`You lost against AI. Bad Luck!`);
+          displayController.updateInfoText(`You lost against AI. Try Again`);
         } else {
           displayController.updateInfoText(
             `Congratulations ${finalWinner}! You won the game`
           );
         }
       }
-    }, 5000);
+    }, 4000);
 
     return;
   }
 
   gameBoard.updateCurrentPlayer();
-  displayController.updateCurrentPlayerDOM(
-    gameBoard.getCurrentPlayer().getName()
-  );
+  currentPlayer = gameBoard.getCurrentPlayer();
+  displayController.updateCurrentPlayerDOM(currentPlayer.getName());
 
   // if next player is AI make an automatic move
-  if (gameBoard.getCurrentPlayer().getName() === "AI") {
-    makeAIMove(gameBoard.getDifficulty());
+  if (currentPlayer.getName() === "AI") {
+    makeAIMove(difficulty);
   }
 }
 
