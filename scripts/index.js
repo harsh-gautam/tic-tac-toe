@@ -294,6 +294,11 @@ const handleForm = (e) => {
   const p2Name = e.target.playertwo.value;
   const difficulty = e.target.difficulty.value;
 
+  if (p1Name === "" || p2Name === "") {
+    alert("You need to enter name for both players.");
+    return;
+  }
+
   // create players
   p1 = Player(p1Name, "x");
   p2 = Player(p2Name, "o");
@@ -329,7 +334,7 @@ function handleCellClick(e) {
       displayController.updateInfoText("It's a draw!");
     } else {
       displayController.updateInfoText(
-        `${currentPlayer.getName()} wins the round!`,
+        `${currentPlayer.getName()} wins round ${round}!`,
         currentPlayer.getName()
       );
       gameBoard.updateWinCount();
@@ -360,7 +365,7 @@ function handleCellClick(e) {
           );
         }
       }
-    }, 4000);
+    }, 3000);
 
     return;
   }
