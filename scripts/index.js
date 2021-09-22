@@ -9,13 +9,21 @@ const displayController = (function (document) {
   const toggleDisplay = (type) => {
     const gameScreen = document.querySelector(".game-wrapper");
     const startScreen = document.querySelector(".start-menu");
+    const form = document.querySelector("#form");
+    const boardWrapper = document.querySelector(".board-wrapper");
 
     if (type == "form") {
-      startScreen.style.display = "none";
-      gameScreen.style.display = "flex";
+      startScreen.style.height = "0";
+      startScreen.style.opacity = "0";
+
+      gameScreen.style.opacity = "1";
+      gameScreen.style.height = "auto";
     } else if (type === "newgame" || type === "exit") {
-      startScreen.style.display = "flex";
-      gameScreen.style.display = "none";
+      gameScreen.style.opacity = "0";
+      gameScreen.style.height = "0";
+
+      startScreen.style.opacity = "1";
+      startScreen.style.height = "auto";
     }
   };
 
