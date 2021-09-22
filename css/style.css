@@ -46,6 +46,10 @@ body {
   max-width: 250px;
   width: 100%;
   display: flex;
+  overflow: hidden;
+  opacity: 1;
+  height: auto;
+  transition: opacity 0.5s ease-in-out;
 }
 
 .start-menu form {
@@ -147,4 +151,10 @@ body {
 
 .submit-button:hover {
   background-color: #caf0f8;
+}
+
+@media screen and (max-width: 420px) {
+  .start-menu {
+    max-width: 300px;
+  }
 }
