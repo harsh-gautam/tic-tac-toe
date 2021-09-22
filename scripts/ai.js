@@ -133,18 +133,19 @@ const makeAIMove = (type) => {
   const ai = gameBoard.getCurrentPlayer().getMarker();
   const human = ai === "x" ? "o" : "x";
   const moves = { human, ai };
+  const { board: boardCopy } = gameBoard.getGameParams();
 
   if (type.toLowerCase() === "easy") {
     let validMove = false;
     while (validMove !== true) {
-      pos = Math.floor(Math.random() * 7);
+      pos = Math.floor(Math.random() * boardCopy.length);
       if (gameBoard.isValidMove(pos)) {
         validMove = true;
       }
     }
   } else if (type.toLowerCase() === "medium") {
     let bestScore = -Infinity;
-    const boardCopy = [...gameBoard.getBoard()];
+    const { board: boardCopy } = gameBoard.getGameParams();
     for (let i = 0; i < 9; i++) {
       if (boardCopy[i] === "") {
         boardCopy[i] = ai;
@@ -158,7 +159,7 @@ const makeAIMove = (type) => {
     }
   } else if (type.toLowerCase() === "hard") {
     let bestScore = -Infinity;
-    const boardCopy = [...gameBoard.getBoard()];
+    const { board: boardCopy } = gameBoard.getGameParams();
     for (let i = 0; i < 9; i++) {
       if (boardCopy[i] === "") {
         boardCopy[i] = ai;
