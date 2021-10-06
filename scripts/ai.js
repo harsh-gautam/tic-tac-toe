@@ -104,11 +104,11 @@ const MiniMax = () => {
 
 const minimax = MiniMax();
 
-const clickCell = (position) => {
+const clickCell = (pos) => {
   const cells = document.querySelectorAll(".col");
-  const cell = Array.from(cells).filter((cell) => {
-    if (Number(cell.dataset.position) === position) return cell;
-  });
+  const cell = Array.from(cells).filter(
+    (cell) => Number(cell.dataset.position) === pos
+  );
   cell[0].click();
 };
 

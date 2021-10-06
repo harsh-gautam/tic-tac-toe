@@ -78,8 +78,12 @@ const displayController = (function (document) {
     }
   };
 
-  const _resetDOM = () => {
+  const _resetCells = () => {
     _cells.forEach((cell) => (cell.textContent = ""));
+  };
+
+  const _resetDOM = () => {
+    _resetCells();
     _updateInfoText(" ");
     _p1Score.innerHTML = "";
     _p2Score.innerHTML = "";
@@ -119,6 +123,7 @@ const displayController = (function (document) {
     updateInfoText: _updateInfoText,
     updateCurrentPlayerDOM,
     resetDOM: _resetDOM,
+    resetCells: _resetCells,
   };
 })(document);
 
@@ -200,13 +205,12 @@ const gameBoard = (function () {
     if (finished === true) {
       _currentPlayer.setWinStatus(true);
       return true;
-    } else {
-      // Game is draw??
-      for (let i = 0; i < 9; i++) {
-        if (_board[i] === "") return false;
-      }
-      return true;
     }
+    // Game is draw??
+    for (let i = 0; i < 9; i++) {
+      if (_board[i] === "") return false;
+    }
+    return true;
   };
 
   const _decideFinalWinner = () => {
@@ -354,7 +358,7 @@ function handleCellClick(e) {
         // Round 1, 2 or 3
         round = gameBoard.updateRound();
         gameBoard.resetRoundInfo();
-        cells.forEach((cell) => (cell.textContent = ""));
+        displayController.resetCells();
         displayController.updateInfoText(`Round ${round}`);
         currentPlayer = gameBoard.getCurrentPlayer();
         displayController.updateCurrentPlayerDOM(currentPlayer.getName());
