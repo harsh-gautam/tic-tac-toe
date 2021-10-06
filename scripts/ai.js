@@ -49,7 +49,7 @@ const MiniMax = () => {
       for (let i = 0; i < 9; i++) {
         if (board[i] === "") {
           board[i] = moves.ai;
-          let score = hard(board, depth + 1, false, moves);
+          score = hard(board, depth + 1, false, moves);
           board[i] = "";
           bestScore = Math.max(score, bestScore);
         }
@@ -60,7 +60,7 @@ const MiniMax = () => {
       for (let i = 0; i < 9; i++) {
         if (board[i] === "") {
           board[i] = moves.human;
-          let score = hard(board, depth + 1, true, moves);
+          score = hard(board, depth + 1, true, moves);
           board[i] = "";
           bestScore = Math.min(score, bestScore);
         }
@@ -79,7 +79,7 @@ const MiniMax = () => {
       for (let i = 0; i < 9; i++) {
         if (board[i] === "") {
           board[i] = moves.ai;
-          let score = medium(board, depth - 1, false, moves);
+          score = medium(board, depth - 1, false, moves);
           board[i] = "";
           bestScore = Math.max(score, bestScore);
         }
@@ -90,7 +90,7 @@ const MiniMax = () => {
       for (let i = 0; i < 9; i++) {
         if (board[i] === "") {
           board[i] = moves.human;
-          let score = medium(board, depth - 1, true, moves);
+          score = medium(board, depth - 1, true, moves);
           board[i] = "";
           bestScore = Math.min(score, bestScore);
         }
@@ -118,6 +118,7 @@ function makeAIMove(type) {
   const human = ai === "x" ? "o" : "x";
   const moves = { human, ai };
   const { board: boardCopy } = gameBoard.getGameParams();
+  let bestScore = -Infinity;
 
   if (type.toLowerCase() === "easy") {
     let validMove = false;
@@ -128,8 +129,6 @@ function makeAIMove(type) {
       }
     }
   } else if (type.toLowerCase() === "medium") {
-    let bestScore = -Infinity;
-    const { board: boardCopy } = gameBoard.getGameParams();
     for (let i = 0; i < 9; i++) {
       if (boardCopy[i] === "") {
         boardCopy[i] = ai;
@@ -142,8 +141,6 @@ function makeAIMove(type) {
       }
     }
   } else if (type.toLowerCase() === "hard") {
-    let bestScore = -Infinity;
-    const { board: boardCopy } = gameBoard.getGameParams();
     for (let i = 0; i < 9; i++) {
       if (boardCopy[i] === "") {
         boardCopy[i] = ai;
