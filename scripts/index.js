@@ -11,7 +11,7 @@ const displayController = (function (document) {
     const startScreen = document.querySelector(".start-menu");
     const footer = document.querySelector("#footer");
 
-    if (type == "form") {
+    if (type === "form") {
       startScreen.style.height = "0";
       startScreen.style.opacity = "0";
 
@@ -146,8 +146,9 @@ const gameBoard = (function () {
   };
 
   const _updateCurrentPlayer = () => {
-    if (_currentPlayer === _p1) _currentPlayer = _p2;
-    else _currentPlayer = _p1;
+    return _currentPlayer === _p1
+      ? (_currentPlayer = _p2)
+      : (_currentPlayer = _p1);
   };
 
   const _updateWinCount = () => {
@@ -209,11 +210,9 @@ const gameBoard = (function () {
   };
 
   const _decideFinalWinner = () => {
-    if (_p1.getWinCount() > _p2.getWinCount()) {
-      return _p1.getName();
-    } else {
-      return _p2.getName();
-    }
+    return _p1.getWinCount() > _p2.getWinCount()
+      ? _p1.getName()
+      : _p2.getName();
   };
 
   const _isValidMove = (pos) => {
@@ -235,14 +234,14 @@ const gameBoard = (function () {
     _board = ["", "", "", "", "", "", "", "", ""];
     _p1.setWinStatus(false);
     _p2.setWinStatus(false);
-    if (p1.getMarker() === "x") {
+    if (_p1.getMarker() === "x") {
       _p1.changeMarker("o");
       _p2.changeMarker("x");
-      _currentPlayer = p2;
+      _currentPlayer = _p2;
     } else {
       _p1.changeMarker("x");
       _p2.changeMarker("o");
-      _currentPlayer = p1;
+      _currentPlayer = _p1;
     }
   };
 
@@ -309,8 +308,8 @@ const handleForm = (e) => {
   }
 
   // create players
-  p1 = Player(p1Name, "x");
-  p2 = Player(p2Name, "o");
+  let p1 = Player(p1Name, "x");
+  let p2 = Player(p2Name, "o");
 
   // create game state
   gameBoard.setParameters(p1, p2, difficulty);

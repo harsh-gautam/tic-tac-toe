@@ -8,11 +8,7 @@ const MiniMax = () => {
         board[i] === board[i + 1] &&
         board[i + 1] === board[i + 2]
       ) {
-        if (board[i] === moves.ai) {
-          score = 10;
-        } else {
-          score = -10;
-        }
+        score = board[i] === moves.ai ? 10 : -10;
       }
     }
     for (let i = 0; i < 3; i++) {
@@ -22,27 +18,15 @@ const MiniMax = () => {
         board[i] === board[i + 3] &&
         board[i + 3] === board[i + 6]
       ) {
-        if (board[i] === moves.ai) {
-          score = 10;
-        } else {
-          score = -10;
-        }
+        score = board[i] === moves.ai ? 10 : -10;
       }
     }
     // check for diagonals
     if (board[0] !== "" && board[0] === board[4] && board[4] === board[8]) {
-      if (board[0] === moves.ai) {
-        score = 10;
-      } else {
-        score = -10;
-      }
+      score = board[0] === moves.ai ? 10 : -10;
     }
     if (board[2] !== "" && board[2] === board[4] && board[4] === board[6]) {
-      if (board[2] === moves.ai) {
-        score = 10;
-      } else {
-        score = -10;
-      }
+      score = board[2] === moves.ai ? 10 : -10;
     }
 
     let openSlots = 0;
@@ -128,7 +112,7 @@ const clickCell = (position) => {
   cell[0].click();
 };
 
-const makeAIMove = (type) => {
+function makeAIMove(type) {
   let pos;
   const ai = gameBoard.getCurrentPlayer().getMarker();
   const human = ai === "x" ? "o" : "x";
@@ -174,4 +158,4 @@ const makeAIMove = (type) => {
   }
 
   clickCell(pos);
-};
+}
